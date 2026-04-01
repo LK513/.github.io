@@ -1,0 +1,32 @@
+GitHub Pages 部署步骤（5分钟完成）
+
+1. 创建GitHub仓库
+   - 访问：https://github.com/new
+   - 仓库名称：collection-agency-management
+   - 选择：Public
+   - 不要勾选 "Add a README file"
+   - 点击 "Create repository"
+
+2. 复制仓库URL
+   - 创建后页面会显示仓库URL
+   - 格式：https://github.com/lk/collection-agency-management.git
+
+3. 在本地执行以下命令（复制粘贴）：
+   git remote add origin https://github.com/lk/collection-agency-management.git
+   git branch -M main
+   git push -u origin main
+
+4. 启用GitHub Pages
+   - 进入仓库页面 → Settings → Pages
+   - Source: Deploy from a branch
+   - Branch: main
+   - 目录: / (root)
+   - 点击 Save
+
+5. 等待1-2分钟，访问：
+   https://lk.github.io/collection-agency-management/collection-agency-management.html
+
+如果遇到问题，请检查：
+- Git配置：git config --global user.name "您的名字"
+- Git配置：git config --global user.email "您的邮箱@example.com"
+- 确保已登录GitHub账户
