@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贷后资产管理平台 - 案件管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 顶部标题栏 */
+        .header {
+            background-color: #001529;
+            color: white;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: #1890ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* 主体布局 */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 200px;
+            background-color: #001529;
+            color: white;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        
+        .nav-group {
+            margin-bottom: 5px;
+        }
+        
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background-color: #1890ff;
+        }
+        
+        .nav-item.active {
+            background-color: #1890ff;
+            border-left-color: #1890ff;
+        }
+        
+        .nav-item.active-sub {
+            background-color: #1890ff;
+        }
+        
+        .nav-item-icon {
+            margin-right: 10px;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+        }
+        
+        /* 右侧内容区域 */
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        /* 搜索区域 */
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .search-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .search-item label {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .search-item input,
+        .search-item select {
+            height: 32px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            padding: 0 12px;
+            transition: all 0.3s;
+        }
+        
+        .search-item input:focus,
+        .search-item select:focus {
+            border-color: #1890ff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(24,144,255,0.2);
+        }
+        
+        .date-range {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .date-range input {
+            flex: 1;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background-color: #1890ff;
+            border-color: #1890ff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #40a9ff;
+            border-color: #40a9ff;
+        }
+        
+        .btn-default:hover {
+            color: #1890ff;
+            border-color: #1890ff;
+        }
+        
+        .btn-disabled {
+            background-color: #f5f5f5;
+            border-color: #d9d9d9;
+            color: #bbb;
+            cursor: not-allowed;
+        }
+        
+        /* 操作栏 */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .action-left {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .action-right {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* 表格区域 */
+        .table-container {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background-color: #fafafa;
+        }
+        
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #e8e8e8;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .action-cell {
+            white-space: nowrap;
+        }
+        
+        .link {
+            color: #1890ff;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 1200px) {
+            .search-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+            
+            .nav-item span {
+                display: none;
+            }
+            
+            .nav-item-icon {
+                margin-right: 0;
+            }
+            
+            .search-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部标题栏 -->
+    <header class="header">
+        <h1>贷后资产管理平台</h1>
+        <div class="user-info">
+            <div class="user-avatar">L</div>
+            <span>likai</span>
+        </div>
+    </header>
+    
+    <!-- 主体布局 -->
+    <div class="main-container">
+        <!-- 左侧导航栏 -->
+        <nav class="sidebar">
+            <div class="nav-group">
+                <div class="nav-item">
+                    <span class="nav-item-icon">📊</span>
+                    <span>信息查询</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-item-icon">📞</span>
+                    <span>预判式外呼</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-item-icon">✅</span>
+                    <span>质量管理</span>
+                </div>
+                <div class="nav-item active">
+                    <span class="nav-item-icon">📁</span>
+                    <span>催收案件</span>
+                </div>
+                <div class="nav-item active-sub" style="padding-left: 40px;">
+                    <span>案件回收</span>
+                </div>
+                <div class="nav-item" style="padding-left: 40px;">
+                    <span>静默案件</span>
+                </div>
+                <div class="nav-item" style="padding-left: 40px;">
+                    <span>停案列表</span>
+                </div>
+                <div class="nav-item" style="padding-left: 40px;">
+                    <span>我的待办</span>
+                </div>
+                <div class="nav-item" style="padding-left: 40px;">
+                    <span>我的已办</span>
+                </div>
+                <div class="nav-item active-sub" style="padding-left: 40px; background-color: #1890ff;">
+                    <span>公共待办</span>
+                </div>
+                <div class="nav-item" style="padding-left: 40px;">
+                    <span>案件查询</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-item-icon">💰</span>
+                    <span>还款提醒</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-item-icon">📈</span>
+                    <span>报表统计</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-item-icon">👤</span>
+                    <span>权限管理</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-item-icon">⚙️</span>
+                    <span>系统管理</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-item-icon">🤝</span>
+                    <span>协商还款</span>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- 右侧内容区域 -->
+        <main class="content">
+            <!-- 搜索区域 -->
+            <div class="search-section">
+                <div class="search-grid">
+                    <div class="search-item">
+                        <label>催收机构</label>
+                        <select>
+                            <option value="">请选择</option>
+                            <option value="1">重庆鸿腾_流量</option>
+                            <option value="2">桔子催收机构</option>
+                            <option value="3">即科催收机构</option>
+                        </select>
+                    </div>
+                    <div class="search-item">
+                        <label>处理人</label>
+                        <select>
+                            <option value="">请选择</option>
+                            <option value="1">zhouyan</option>
+                            <option value="2">likai</option>
+                            <option value="3">戈小嫚</option>
+                        </select>
+                    </div>
+                    <div class="search-item">
+                        <label>当前账龄</label>
+                        <input type="text" value="M" placeholder="请输入">
+                    </div>
+                    <div class="search-item">
+                        <label>用户ID</label>
+                        <input type="text" placeholder="请输入用户ID">
+                    </div>
+                    <div class="search-item">
+                        <label>用户姓名</label>
+                        <input type="text" placeholder="请输入用户姓名">
+                    </div>
+                    <div class="search-item">
+                        <label>逾期金额从</label>
+                        <div class="date-range">
+                            <input type="text" placeholder="至">
+                        </div>
+                    </div>
+                    <div class="search-item">
+                        <label>逾期天数从</label>
+                        <div class="date-range">
+                            <input type="text" placeholder="至">
+                        </div>
+                    </div>
+                    <div class="search-item">
+                        <label>案件编号</label>
+                        <input type="text" placeholder="请输入案件编号">
+                    </div>
+                    <div class="search-item">
+                        <label>案件创建时间</label>
+                        <div class="date-range">
+                            <input type="text" placeholder="开始日期">
+                            <span>~</span>
+                            <input type="text" placeholder="结束日期">
+                        </div>
+                    </div>
+                    <div class="search-item">
+                        <label>案件更新时间</label>
+                        <div class="date-range">
+                            <input type="text" placeholder="开始日期">
+                            <span>~</span>
+                            <input type="text" placeholder="结束日期">
+                        </div>
+                    </div>
+                    <div class="search-item">
+                        <label>产品名称</label>
+                        <select>
+                            <option value="">请选择</option>
+                            <option value="1">携程</option>
+                            <option value="2">其他产品</option>
+                        </select>
+                    </div>
+                    <div class="search-item">
+                        <label>风险等级</label>
+                        <select>
+                            <option value="">请选择</option>
+                            <option value="1">0</option>
+                            <option value="2">1</option>
+                            <option value="3">2</option>
+                        </select>
+                    </div>
+                    <div class="search-item">
+                        <label>到期类型</label>
+                        <select>
+                            <option value="">请选择</option>
+                            <option value="1">本金到期</option>
+                            <option value="2">利息到期</option>
+                        </select>
+                    </div>
+                    <div class="search-item">
+                        <label>所属城市</label>
+                        <select>
+                            <option value="">请选择</option>
+                            <option value="1">暂无</option>
+                            <option value="2">北京</option>
+                        </select>
+                    </div>
+                    <div class="search-item">
+                        <label>分案时间</label>
+                        <div class="date-range">
+                            <input type="text" placeholder="开始日期">
+                            <span>~</span>
+                            <input type="text" placeholder="结束日期">
+                        </div>
+                    </div>
+                    <div class="search-item">
+                        <label>回收时间</label>
+                        <div class="date-range">
+                            <input type="text" placeholder="开始日期">
+                            <span>~</span>
+                            <input type="text" placeholder="结束日期">
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-default">重置</button>
+                    <button class="btn btn-primary">查询</button>
+                </div>
+            </div>
+            
+            <!-- 操作栏 -->
+            <div class="action-bar">
+                <div class="action-left">
+                    <button class="btn btn-disabled">勾选重分配</button>
+                </div>
+                <div class="action-right">
+                    <button class="btn btn-primary">条件重分配</button>
+                </div>
+            </div>
+            
+            <!-- 数据表格 -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;"><input type="checkbox"></th>
+                            <th>案件编号</th>
+                            <th>用户ID</th>
+                            <th>用户姓名</th>
+                            <th>当前账龄</th>
+                            <th>账龄阶段</th>
+                            <th>余额</th>
+                            <th>逾期金额</th>
+                            <th>逾期天数</th>
+                            <th>分配时间</th>
+                            <th>回收时间</th>
+                            <th>风险等级</th>
+                            <th>到期类型</th>
+                            <th>所属城市</th>
+                            <th>跟进状态</th>
+                            <th>当前处理人</th>
+                            <th>催收机构</th>
+                            <th>案件状态</th>
+                            <th>创建时间</th>
+                            <th>产品名称</th>
+                            <th>更新时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td><a class="link">13302529</a></td>
+                            <td>367310<br>378305<br>270583<br>7</td>
+                            <td>黄益超</td>
+                            <td>M1</td>
+                            <td>S2</td>
+                            <td>17030.6</td>
+                            <td>11751.79</td>
+                            <td>181</td>
+                            <td>2026-04-01 09:24:47</td>
+                            <td>2026-07-01 00:00:00</td>
+                            <td>0</td>
+                            <td>本金到期</td>
+                            <td>暂无</td>
+                            <td>未完成</td>
+                            <td>戈小嫚</td>
+                            <td>融关(高期)_流量</td>
+                            <td>案件处理中</td>
+                            <td>2026-04-01 06:21:23</td>
+                            <td>携程</td>
+                            <td>2026-04-01 14:03:47</td>
+                            <td class="action-cell">
+                                <button class="btn btn-primary" style="padding: 2px 8px; font-size: 12px;">查看详情</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td><a class="link">13302528</a></td>
+                            <td>357693<br>236356<br>684276<br>9</td>
+                            <td>吴明峰</td>
+                            <td>M1</td>
+                            <td>S2</td>
+                            <td>13216.92</td>
+                            <td>11765.33</td>
+                            <td>181</td>
+                            <td>2026-04-01 09:24:47</td>
+                            <td>2026-07-01 00:00:00</td>
+                            <td>0</td>
+                            <td>本金到期</td>
+                            <td>暂无</td>
+                            <td>未完成</td>
+                            <td>晁瑞芳</td>
+                            <td>融关(高期)_流量</td>
+                            <td>案件处理中</td>
+                            <td>2026-04-01 06:21:23</td>
+                            <td>携程</td>
+                            <td>2026-04-01 14:03:47</td>
+                            <td class="action-cell">
+                                <button class="btn btn-primary" style="padding: 2px 8px; font-size: 12px;">查看详情</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td><a class="link">13302527</a></td>
+                            <td>372256<br>123456<br>789012<br>3</td>
+                            <td>张三</td>
+                            <td>M2</td>
+                            <td>S3</td>
+                            <td>25678.45</td>
+                            <td>20123.67</td>
+                            <td>210</td>
+                            <td>2026-03-15 14:30:22</td>
+                            <td>2026-06-15 00:00:00</td>
+                            <td>1</td>
+                            <td>利息到期</td>
+                            <td>北京</td>
+                            <td>已完成</td>
+                            <td>李四</td>
+                            <td>即科催收机构</td>
+                            <td>案件处理中</td>
+                            <td>2026-03-15 10:15:33</td>
+                            <td>其他产品</td>
+                            <td>2026-04-01 11:20:15</td>
+                            <td class="action-cell">
+                                <button class="btn btn-primary" style="padding: 2px 8px; font-size: 12px;">查看详情</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
