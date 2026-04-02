@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法诉统计报表优化 - PRD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header .meta {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .module-title {
+            font-size: 24px;
+            color: #1a1a1a;
+            margin: 40px 0 20px;
+            padding-left: 16px;
+            border-left: 4px solid #667eea;
+        }
+        .optimization-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid #667eea;
+        }
+        .optimization-card h3 {
+            font-size: 18px;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-p1 {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .badge-p2 {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .change-block {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        .change-block h4 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .before {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        .before::before {
+            content: "优化前";
+            display: block;
+            font-size: 12px;
+            color: #e53e3e;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .after {
+            background: #f0fff4;
+            border: 1px solid #c6f6d5;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        .after::before {
+            content: "优化后";
+            display: block;
+            font-size: 12px;
+            color: #38a169;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #92400e;
+            font-weight: 500;
+        }
+        .note {
+            background: #eff6ff;
+            border-left: 3px solid #3b82f6;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 14px;
+            color: #1e40af;
+        }
+        .screenshot-placeholder {
+            background: #e5e7eb;
+            border: 2px dashed #9ca3af;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #6b7280;
+            margin: 16px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        tr:hover {
+            background: #f9fafb;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>法诉统计报表优化</h1>
+            <div class="meta">
+                <span>模块三</span> | 
+                <span>文档版本：v1.0</span> | 
+                <span>更新日期：2026-04-02</span>
+            </div>
+        </div>
+
+        <h2 class="module-title">优化点总览</h2>
+        
+        <div class="optimization-card">
+            <h3>3.1 增加下载功能 <span class="badge badge-p1">P1</span></h3>
+            
+            <div class="change-block">
+                <h4>改动说明</h4>
+                <div class="before">
+                    法诉统计报表仅支持页面查看，无法导出筛选结果
+                </div>
+                <div class="after">
+                    支持将筛选结果导出为 <span class="highlight">.xlsx 文件</span>，格式和字段与页面保持一致
+                </div>
+            </div>
+            
+            <div class="note">
+                💡 导出功能需保持与页面展示字段完全一致，确保数据一致性
+            </div>
+            
+            <div class="screenshot-placeholder">
+                📷 截图占位：下载功能按钮位置示意
+            </div>
+        </div>
+
+        <div class="optimization-card">
+            <h3>3.2 回款部分增加截止时间 <span class="badge badge-p2">P2</span></h3>
+            
+            <div class="change-block">
+                <h4>改动说明</h4>
+                <div class="before">
+                    回款数据统计无明确截止时间说明，用户无法感知数据时效性
+                </div>
+                <div class="after">
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+                        <li>显示逻辑：<span class="highlight">T-2</span>（截止至前2天）</li>
+                        <li>表头文案改为：<span class="highlight">"回款及应预提情况(截止YYYY/MM/DD)"</span></li>
+                        <li>最后一列改为：<span class="highlight">"应预提费用（元）"</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="note">
+                💡 T-2 逻辑需确保数据准确性，避免因当日数据未完全入账导致统计偏差
+            </div>
+        </div>
+
+        <div class="optimization-card">
+            <h3>3.3 增加单位显示；律所显示中文名称 <span class="badge badge-p2">P2</span></h3>
+            
+            <div class="change-block">
+                <h4>改动说明</h4>
+                <div class="before">
+                    <ul style="margin-left: 20px;">
+                        <li>金额字段无单位标识，用户需自行判断</li>
+                        <li>律所字段显示为代码或ID，不直观</li>
+                    </ul>
+                </div>
+                <div class="after">
+                    <ul style="margin-left: 20px;">
+                        <li>报表中增加<span class="highlight">单位显示</span>（如：元、%）</li>
+                        <li>律所字段显示<span class="highlight">中文名称</span>（而非代码或ID）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="optimization-card">
+            <h3>3.4 新增合计列 <span class="badge badge-p2">P2</span></h3>
+            
+            <div class="change-block">
+                <h4>改动说明</h4>
+                <div class="before">
+                    报表无合计行，需手动计算各列总和
+                </div>
+                <div class="after">
+                    新增<span class="highlight">合计列</span>，将每列的数据相加汇总
+                </div>
+            </div>
+            
+            <div class="note">
+                ⚠️ 回款率计算规则：<span class="highlight">相加后的回款金额 ÷ 相加后的标的金额</span>（非各回款率的平均值）
+            </div>
+        </div>
+
+        <div class="optimization-card">
+            <h3>3.5 报表排序优化 <span class="badge badge-p2">P2</span></h3>
+            
+            <div class="change-block">
+                <h4>改动说明</h4>
+                <div class="before">
+                    报表行排序规则不明确或不符合业务习惯
+                </div>
+                <div class="after">
+                    按<span class="highlight">"移交律所时间"正序</span>排列（从早到晚）
+                </div>
+            </div>
+        </div>
+
+        <div class="optimization-card">
+            <h3>3.6 还款总额统计逻辑优化 <span class="badge badge-p1">P1</span></h3>
+            
+            <div class="change-block">
+                <h4>改动说明</h4>
+                <div class="before">
+                    还款总额统计包含所有状态的还款金额，包括已退案案件
+                </div>
+                <div class="after">
+                    统计还款总额时，<span class="highlight">减去诉讼状态为"已退案"的还款金额</span>
+                </div>
+            </div>
+            
+            <div class="note">
+                💡 此改动影响报表核心数据准确性，需确保测试覆盖所有诉讼状态场景
+            </div>
+        </div>
+
+        <h2 class="module-title">改动对比汇总</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>优化点</th>
+                    <th>改动类型</th>
+                    <th>核心变更</th>
+                    <th>优先级</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>3.1 下载功能</td>
+                    <td><span class="highlight">新增</span></td>
+                    <td>新增 .xlsx 导出功能</td>
+                    <td>P1</td>
+                </tr>
+                <tr>
+                    <td>3.2 截止时间</td>
+                    <td><span class="highlight">修改</span></td>
+                    <td>表头文案+T-2逻辑+列名调整</td>
+                    <td>P2</td>
+                </tr>
+                <tr>
+                    <td>3.3 单位/律所名</td>
+                    <td><span class="highlight">修改</span></td>
+                    <td>增加单位显示，律所ID转中文名</td>
+                    <td>P2</td>
+                </tr>
+                <tr>
+                    <td>3.4 合计列</td>
+                    <td><span class="highlight">新增</span></td>
+                    <td>新增合计行，回款率特殊计算</td>
+                    <td>P2</td>
+                </tr>
+                <tr>
+                    <td>3.5 排序优化</td>
+                    <td><span class="highlight">修改</span></td>
+                    <td>按移交律所时间正序</td>
+                    <td>P2</td>
+                </tr>
+                <tr>
+                    <td>3.6 还款总额</td>
+                    <td><span class="highlight">修改</span></td>
+                    <td>排除已退案还款金额</td>
+                    <td>P1</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <p>文档生成时间：2026-04-02 | 来源：贷后-法诉功能优化需求文档</p>
+        </div>
+    </div>
+</body>
+</html>
